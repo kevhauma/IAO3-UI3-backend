@@ -6,7 +6,7 @@ let roomRepo = repoFactory("room")
 
 
 let departementnames = ["intensief","oogkliniek","fysiotherapie","orthopedie","spoed","psychiatrie"]
-let facilities = ["sanitair","kinderverzorging","salon"]
+let facilities = ["sanitair","kinderverzorging","salon","TV"]
 let actionNames = ["medicatie","injectie","infuus","eten","wassen","omkeren"]
 let reasons= ["vitaminenpil ingeademd","gom in neus","steen in het oor","ontwrichtte kaak door geeuwen","gebroken rib door niezen","gebroken vinger tijdens zandekasteel bouwen","alergie aanval van avocados","gebroken teen door spel Twister","Infectie door bij","overreden door bus","te hard op klarinet geblazen","hartaanval door te veel pizza te eten","ontwrichtte pols door hond te aaien","gebroken been door verschieten van insect"]
 let coords = [{x:12,y:23},
@@ -39,13 +39,13 @@ async function initPatients() {
     for (let i = 0; i < 20; i++) {
         await patients.push(makePatient(result.data))
     }
-    await initDepartment()
+    initDepartment()
 }
 
 
-async function initDepartment(){
+function initDepartment(){
     departementnames.forEach((dep,depindex)=>{
-        let dep = {
+        let department = {
             id : depindex,
             name: dep
         }
@@ -60,25 +60,30 @@ async function initDepartment(){
                     height: roomheight
                 }
             }
-            dep.rooms.push(room)
+            department.rooms.push(room)
             rooms.push(room)
-        })
-        
+        })       
+    })
+    
+    putIntoDatabase()
+}
+
+function putIntoDatabase(){
+    patients.forEach(async p=>{
+        patientRepo.add(p)
+    })
+    rooms.forEach(async r=>{
+        await roomRepo.add(r)
+    })
+    departments.forEach(async d=>{
+        await departmentRepo.add(d)
     })
 }
 
-async function addRoomToDepartment(){
-    
-}
-
-async function putIntoDatabase(){
-    
-}
 
 
 
-
-async function makepatient(random){
+async function makepatient(){
     let random = await axios.get("https://randomuser.me/api/")
     let patient = {
         id: random.id.value,

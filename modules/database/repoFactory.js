@@ -3,15 +3,15 @@ let repos = {}
 
 
 function init(name) {
-    if (!repo[name]) {
-        repo[name] = {
+    if (!repos[name]) {
+        repos[name] = {
             get: makeGet(name),
             add: makeAdd(name),
             update: makeUpdate(name),
             remove: makeRemove(name)
         }
     }
-    return repo[name]
+    return repos[name]
 }
 
 
