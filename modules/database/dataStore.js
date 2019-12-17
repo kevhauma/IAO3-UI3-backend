@@ -2,7 +2,7 @@ const Datastore = require('nedb')
 let fs = require("fs")
 let dbs = {}
 
-let types = ["room","patient"]
+let types = ["room","patient","departments"]
 
 loadDatabases()
 
@@ -12,6 +12,15 @@ function loadDatabases() {
     fs.readdir("./data/", async(err, folders) => {
         for (let type of types) {
             await findDB(type)
+        }                
+    })
+}
+
+function clean() {
+    fs.readdir("./data/", async(err, folders) => {
+        for (let type of types) {
+            let db = await findDB(type)
+            db.remove({},{deep:true},(err,docs)=> console.log(`emptied ${type} database`))
         }                
     })
 }
@@ -33,3 +42,4 @@ async function findDB(type) {
 
 
 module.exports.get = get
+module.exports.clean = clean

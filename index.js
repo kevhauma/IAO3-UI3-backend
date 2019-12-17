@@ -1,15 +1,2 @@
-let axios = require("axios")
-let users = []
-
 let express = require("./modules/express/express.js")
-
-
-//initUsers();
-
-async function initUsers() {
-    for (let i = 0; i < 20; i++) {
-        let result = await axios.get("https://randomuser.me/api/")
-        users.push(result.data.results[0])
-    }
-    console.log(users)
-}
+let socket = require("./modules/websocket/socket.js")

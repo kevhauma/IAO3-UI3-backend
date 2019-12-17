@@ -1,5 +1,5 @@
 function init(app, name) {
-    let repo = require(`../database/repo.js`)(name)
+    let repo = require(`../database/repoFactory.js`)(name)
     app.route(`/${name}`)
         .get(async(req, res) => {
             try {
