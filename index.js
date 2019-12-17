@@ -1,7 +1,10 @@
 let axios = require("axios")
 let users = []
 
-initUsers();
+let express = require("./modules/express/express.js")
+
+
+//initUsers();
 
 async function initUsers() {
     for (let i = 0; i < 20; i++) {

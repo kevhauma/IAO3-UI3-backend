@@ -23,7 +23,7 @@ async function get(type) {
 
 
 async function findDB(type) {
-    if (!dbs[guild][type]) {
+    if (!dbs[type]) {
         let db = new Datastore(`./data/${type}.db`)
         await db.loadDatabase()
         dbs[type] = db
