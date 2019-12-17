@@ -27,7 +27,7 @@ let coords = [{x:12,y:23},
 
 
 
-const roomwidht = 165
+const roomwidth = 165
 const roomheight = 180
 
 let departments = []
@@ -52,7 +52,13 @@ async function initDepartment(){
         coords.forEach((coord,coordindex)=>{
             let room ={
                 //id = 103 or 512
-                id: `${depindex}${coordindex.toString().length == 1 ? `0${coordindex}` : coordindex`}`,
+                id: `${depindex}${coordindex.toString().padStart(2,"0")}`,
+                placements:{
+                    x: coord.x,
+                    y: coord.y,
+                    width: roomwidth,
+                    height: roomheight
+                }
             }
             dep.rooms.push(room)
             rooms.push(room)
