@@ -1,4 +1,4 @@
 let store = require("./dataStore.js")
 
 
-store.clean()
+store.clean(["room","patient","department"])

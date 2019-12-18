@@ -15,7 +15,7 @@ function init(app, name) {
         .post(async(req, res) => {
             try {
                 let updated = repo.add(req.body.toAdd)
-                res.status(updated ? 200 : 400)
+                res.status(updated ? 200 : 404)
                 console.log(`${res.statusCode} POST /${name}/${req.params.id}`)
                 res.send(updated)
             } catch (e) {
@@ -26,8 +26,9 @@ function init(app, name) {
     app.route(`/${name}/:id`)
         .get(async(req, res) => {
             try {
-                let one = await repo.get(req.id)
-                res.status(one ? 200 : 400)
+                let one = await repo.get(req.params.id) 
+                console.log(one)
+                res.status(one ? 200 : 404)
                 console.log(`${res.statusCode} GET /${name}/${req.params.id}`)
                 res.send(one)
             } catch (e) {
@@ -38,7 +39,7 @@ function init(app, name) {
         .put(async(req, res) => {
             try {
                 let all = await repo.update(req.params.id, req.body.toUpdate)
-                res.status(all ? 200 : 400)
+                res.status(all ? 200 : 404)
                 console.log(`${res.statusCode} PUT /${name}/${req.params.id}`)
                 res.send(all)
             } catch (e) {
@@ -48,10 +49,10 @@ function init(app, name) {
         })
         .delete(async(req, res) => {
             try {
-                let all = await repo.remove(req.params.id)
-                res.status(all ? 200 : 400)
+                let deleted = await repo.remove(req.params.id)
+                res.status(deleted ? 200 : 404)
                 console.log(`${res.statusCode} DELETE /${name}/${req.params.id}`)
-                res.send(all)
+                res.send(deleted)
             } catch (e) {
                 res.status(500)
                 res.send(e)

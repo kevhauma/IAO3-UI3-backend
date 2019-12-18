@@ -20,10 +20,9 @@ function makeGet(name) {
     return (id) => {
         return new Promise(async(res, rej) => {
             try {
-                let store = await db.get(name)
+                let db = await store.get(name)
                 id = id ? {id} : {}
-
-                store.find(filter, (err, docs) => {
+                db.find(id, (err, docs) => {
                     if (err) throw err
                     docs = docs[0] ? docs : null
                     res(docs)
@@ -41,10 +40,14 @@ function makeAdd(name) {
     return (object) => {
         return new Promise(async(res, rej) => {
             try {
-                let validate = require(`../validate${name}.js`)
-                validate(object)
+//                let validate = require(`../validate${name}.js`)
+//                validate(object)
 
-                let store = await db.get(name)
+                let db = await store.get(name)
+                db.insert(object,(err)=>{
+                    console.log("inserted into: ",name,object )
+                    if (err) throw err
+                })
 
             } catch (e) {
                 rej(`[ERROR][${name}][ADD] ${e}`)
@@ -57,12 +60,12 @@ function makeUpdate(name) {
     return (id, object) => {
         return new Promise(async(res, rej) => {
             try {
-                let validate = require(`../validate${name}.js`)
-                validate(object)
+//                let validate = require(`../validate${name}.js`)
+//                validate(object)
 
-                let store = await db.get(name)
+                let db = await store.get(name)
 
-                store.update({id},  object, (err, doc) => {
+                db.update({id},  object, (err, doc) => {
                     if (err) throw err
                     doc = doc[0] ? doc : null
                     res(docs)
@@ -74,13 +77,13 @@ function makeUpdate(name) {
     }
 }
 
-function makeUpdate(name) {
+function makeRemove(name) {
     return (id) => {
         return new Promise(async(res, rej) => {
             try {
-                let store = await db.get(name)
+                let db = await dtore.get(name)
 
-                store.remove({id}, {}, (err, doc) => {
+                db.remove({id}, {}, (err, doc) => {
                     if (err) throw err
                     doc = doc[0] ? doc : null
                     res(docs)
@@ -91,6 +94,7 @@ function makeUpdate(name) {
         })
     }
 }
+
 
 
 

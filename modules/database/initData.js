@@ -1,4 +1,5 @@
 let axios = require("axios")
+let uuid = require("uuid/v1")
 let repoFactory = require("./repoFactory.js")
 let departmentRepo = repoFactory("department")
 let patientRepo = repoFactory("patient")
@@ -35,9 +36,10 @@ let rooms = []
 let patients = []
 
 
+initPatients()
 async function initPatients() {
     for (let i = 0; i < 20; i++) {
-        await patients.push(makePatient(result.data))
+        patients.push(await makePatient())
     }
     initDepartment()
 }
@@ -47,7 +49,8 @@ function initDepartment(){
     departementnames.forEach((dep,depindex)=>{
         let department = {
             id : depindex,
-            name: dep
+            name: dep,
+            rooms:[]
         }
         coords.forEach((coord,coordindex)=>{
             let room ={
@@ -60,9 +63,10 @@ function initDepartment(){
                     height: roomheight
                 }
             }
-            department.rooms.push(room)
+            department.rooms.push(room.id)
             rooms.push(room)
-        })       
+        })
+        departments.push(department)
     })
     
     putIntoDatabase()
@@ -70,7 +74,7 @@ function initDepartment(){
 
 function putIntoDatabase(){
     patients.forEach(async p=>{
-        patientRepo.add(p)
+        await patientRepo.add(p)
     })
     rooms.forEach(async r=>{
         await roomRepo.add(r)
@@ -83,10 +87,11 @@ function putIntoDatabase(){
 
 
 
-async function makepatient(){
-    let random = await axios.get("https://randomuser.me/api/")
+async function makePatient(){
+    let random = (await axios.get("https://randomuser.me/api/?nat=NL")).data
+    random = random.results[0]
     let patient = {
-        id: random.id.value,
+        id: uuid(),
         name: `${random.name.first} ${random.name.last}`,
         bloodPressure: (Math.round(Math.random() * 180 + 60)) + "/" + (Math.round(Math.random() * 120 + 60)),
         img: random.picture.medium,
@@ -100,7 +105,7 @@ async function makepatient(){
         actions.push(makeAction())
     }
     patient.actions = actions
-    
+    return patient
 }
 
 
@@ -110,7 +115,7 @@ function makeAction(){
     let hour = Math.round((Math.random() * (24 - today.getHours())) + today.getHours())
     let minutes = Math.round(Math.random() * 60)
     
-    let time = new Date(today.getFullYear,today.getMonth,today.getDate,hour,minutes)
+    let time = new Date(today.getFullYear(),today.getMonth(),today.getDate(),hour,minutes)
     let actionName = actionNames[Math.round(Math.random() * (actionNames.length - 1))]
     
     return {time,actionName,done: false}
