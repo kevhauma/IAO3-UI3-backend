@@ -44,6 +44,9 @@ async function init() {
     patients = randoms.map(makePatient)
     departments = departementnames.map(makeDepartment)
     
+    assignPatientsToRooms()
+    
+    
     await asyncForEach(patients, async (p) => await patientRepo.add(p))
     await asyncForEach(departments, async (d) => await departmentRepo.add(d))
     await asyncForEach(rooms, async (r) => await roomRepo.add(r))
@@ -115,6 +118,16 @@ function makeAction(){
     
     return {time,actionName,done: false}
 }
+
+function assignPatientsToRooms(){
+    patients.forEach(p=>{
+        let freeRooms = rooms.filter(r=>!r.patient)
+        let randomRoom = freeRooms[Math.round(Math.random() * (freeRooms.length - 1))]
+        randomRoom.patient = p.id
+    })    
+}
+
+
 
 //async forEach from:
 //https://codeburst.io/javascript-async-await-with-foreach-b6ba62bbf404
