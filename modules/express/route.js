@@ -26,8 +26,8 @@ function init(app, name) {
     app.route(`/${name}/:id`)
         .get(async(req, res) => {
             try {
-                let one = await repo.get(req.params.id) 
-                console.log(one)
+                let oneArray = await repo.get(req.params.id) 
+                let one = oneArray[0]
                 res.status(one ? 200 : 404)
                 console.log(`${res.statusCode} GET /${name}/${req.params.id}`)
                 res.send(one)

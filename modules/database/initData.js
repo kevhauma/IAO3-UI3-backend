@@ -33,21 +33,19 @@ const roomheight = 180
 let patients = []
 let rooms = []
 let departments = []
-init().then(()=> console.log("completed"))
-function init() {
-    return new Promise(async(res,rej)=>{
-        let data = (await axios.get("https://randomuser.me/api/?nat=NL&results=55")).data
-        let randoms = data.results
-        
-        patients = randoms.map(makePatient)
-        departments = departementnames.map(makeDepartment)
-        
-        await asyncForEach(patients, async (p) => await patientRepo.add(p))
-        await asyncForEach(departments, async (d) => await departmentRepo.add(d))
-        await asyncForEach(rooms, async (r) => await roomRepo.add(r))
-        
-        res()    
-    })
+
+async function init() {
+    
+    let data = (await axios.get("https://randomuser.me/api/?nat=NL&results=55")).data
+    let randoms = data.results
+    
+    patients = randoms.map(makePatient)
+    departments = departementnames.map(makeDepartment)
+    
+    await asyncForEach(patients, async (p) => await patientRepo.add(p))
+    await asyncForEach(departments, async (d) => await departmentRepo.add(d))
+    await asyncForEach(rooms, async (r) => await roomRepo.add(r))
+    
 }
 
 
@@ -63,6 +61,7 @@ function makeDepartment(dep,depindex){
     
     return department
 }
+
 function makeRoom(coord,coordindex,depIndex){
     let room ={
     //id = 103 or 512
