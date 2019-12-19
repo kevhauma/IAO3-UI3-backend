@@ -38,10 +38,10 @@ function init(app, name) {
         })        
         .put(async(req, res) => {
             try {
-                let all = await repo.update(req.params.id, req.body.toUpdate)
-                res.status(all ? 200 : 404)
+                let updated = await repo.update(req.params.id, req.body.toUpdate)
+                res.status(updated ? 200 : 404)
                 console.log(`${res.statusCode} PUT /${name}/${req.params.id}`)
-                res.send(all)
+                res.send(updated)
             } catch (e) {
                 res.status(500)
                 res.send(e)

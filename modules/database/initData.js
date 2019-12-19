@@ -30,66 +30,60 @@ let coords = [{x:12,y:23},
 
 const roomwidth = 165
 const roomheight = 180
-
-let departments = []
-let rooms = []
 let patients = []
+let rooms = []
+let departments = []
+init().then(()=> console.log("completed"))
+function init() {
+    return new Promise(async(res,rej)=>{
+        let data = (await axios.get("https://randomuser.me/api/?nat=NL&results=55")).data
+        let randoms = data.results
+        
+        patients = randoms.map(makePatient)
+        departments = departementnames.map(makeDepartment)
+        
+        await asyncForEach(patients, async (p) => await patientRepo.add(p))
+        await asyncForEach(departments, async (d) => await departmentRepo.add(d))
+        await asyncForEach(rooms, async (r) => await roomRepo.add(r))
+        
+        res()    
+    })
+}
 
 
-initPatients()
-async function initPatients() {
-    for (let i = 0; i < 20; i++) {
-        patients.push(await makePatient())
+function makeDepartment(dep,depindex){    
+    let department = {
+        id : depindex.toString(),
+        name: dep,
+        rooms:[]
     }
-    initDepartment()
-}
-
-
-function initDepartment(){
-    departementnames.forEach((dep,depindex)=>{
-        let department = {
-            id : depindex,
-            name: dep,
-            rooms:[]
-        }
-        coords.forEach((coord,coordindex)=>{
-            let room ={
-                //id = 103 or 512
-                id: `${depindex}${coordindex.toString().padStart(2,"0")}`,
-                placements:{
-                    x: coord.x,
-                    y: coord.y,
-                    width: roomwidth,
-                    height: roomheight
-                }
-            }
-            department.rooms.push(room.id)
-            rooms.push(room)
-        })
-        departments.push(department)
-    })
+    departmentRooms = coords.map((c,index)=>makeRoom(c,index,depindex))
+    departmentRooms.forEach(r=>rooms.push(r))
+    department.rooms = departmentRooms    
     
-    putIntoDatabase()
+    return department
+}
+function makeRoom(coord,coordindex,depIndex){
+    let room ={
+    //id = 103 or 512
+        id: `${depIndex}${coordindex.toString().padStart(2,"0")}`,
+        placements:{
+            x: coord.x,
+            y: coord.y,
+            width: roomwidth,
+            height: roomheight
+        },
+        facilities : {}
+    }   
+            
+    facilities.forEach(f=>{
+        room.facilities[f] = Math.random() > 0.65
+    })    
+    return room
 }
 
-function putIntoDatabase(){
-    patients.forEach(async p=>{
-        await patientRepo.add(p)
-    })
-    rooms.forEach(async r=>{
-        await roomRepo.add(r)
-    })
-    departments.forEach(async d=>{
-        await departmentRepo.add(d)
-    })
-}
 
-
-
-
-async function makePatient(){
-    let random = (await axios.get("https://randomuser.me/api/?nat=NL")).data
-    random = random.results[0]
+function makePatient(random){
     let patient = {
         id: uuid(),
         name: `${random.name.first} ${random.name.last}`,
@@ -119,4 +113,12 @@ function makeAction(){
     let actionName = actionNames[Math.round(Math.random() * (actionNames.length - 1))]
     
     return {time,actionName,done: false}
+}
+
+//async forEach from:
+//https://codeburst.io/javascript-async-await-with-foreach-b6ba62bbf404
+async function asyncForEach(array, callback) {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array);
+  }
 }

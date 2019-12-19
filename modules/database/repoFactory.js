@@ -22,6 +22,7 @@ function makeGet(name) {
             try {
                 let db = await store.get(name)
                 id = id ? {id} : {}
+                
                 db.find(id, (err, docs) => {
                     if (err) throw err
                     docs = docs[0] ? docs : null
@@ -37,18 +38,16 @@ function makeGet(name) {
 
 
 function makeAdd(name) {
-    return (object) => {
+    return (object) => {        
         return new Promise(async(res, rej) => {
             try {
-//                let validate = require(`../validate${name}.js`)
-//                validate(object)
-
                 let db = await store.get(name)
-                db.insert(object,(err)=>{
-                    console.log("inserted into: ",name,object )
+                
+                db.insert(object,(err,added)=>{
+                    console.log("inserted into: ",name,added.id )
                     if (err) throw err
+                    res(added)
                 })
-
             } catch (e) {
                 rej(`[ERROR][${name}][ADD] ${e}`)
             }
@@ -60,9 +59,6 @@ function makeUpdate(name) {
     return (id, object) => {
         return new Promise(async(res, rej) => {
             try {
-//                let validate = require(`../validate${name}.js`)
-//                validate(object)
-
                 let db = await store.get(name)
 
                 db.update({id},  object, (err, doc) => {
