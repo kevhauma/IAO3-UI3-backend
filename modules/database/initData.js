@@ -34,6 +34,8 @@ let patients = []
 let rooms = []
 let departments = []
 
+init()
+
 async function init() {
     
     let data = (await axios.get("https://randomuser.me/api/?nat=NL&results=55")).data
@@ -57,7 +59,7 @@ function makeDepartment(dep,depindex){
     }
     departmentRooms = coords.map((c,index)=>makeRoom(c,index,depindex))
     departmentRooms.forEach(r=>rooms.push(r))
-    department.rooms = departmentRooms    
+    department.rooms = departmentRooms.map(r=>r.id)
     
     return department
 }

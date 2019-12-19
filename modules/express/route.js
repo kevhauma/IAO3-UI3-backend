@@ -8,6 +8,7 @@ function init(app, name) {
                 console.log(`${res.statusCode} GET /${name}`)
                 res.send(all)
             } catch (e) {
+                console.log(e)
                 res.status(500)
                 res.send(e)
             }
@@ -19,6 +20,7 @@ function init(app, name) {
                 console.log(`${res.statusCode} POST /${name}/${req.params.id}`)
                 res.send(updated)
             } catch (e) {
+                console.log(e)
                 res.status(500)
                 res.send(e)
             }
@@ -27,11 +29,12 @@ function init(app, name) {
         .get(async(req, res) => {
             try {
                 let oneArray = await repo.get(req.params.id) 
-                let one = oneArray[0]
+                let one = oneArray ? oneArray[0] : null
                 res.status(one ? 200 : 404)
                 console.log(`${res.statusCode} GET /${name}/${req.params.id}`)
                 res.send(one)
             } catch (e) {
+                console.log(e)
                 res.status(500)
                 res.send(e)
             }
@@ -43,6 +46,7 @@ function init(app, name) {
                 console.log(`${res.statusCode} PUT /${name}/${req.params.id}`)
                 res.send(updated)
             } catch (e) {
+                console.log(e)
                 res.status(500)
                 res.send(e)
             }
@@ -54,6 +58,7 @@ function init(app, name) {
                 console.log(`${res.statusCode} DELETE /${name}/${req.params.id}`)
                 res.send(deleted)
             } catch (e) {
+                console.log(e)
                 res.status(500)
                 res.send(e)
             }
