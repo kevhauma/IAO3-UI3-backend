@@ -61,10 +61,10 @@ function makeUpdate(name) {
             try {
                 let db = await store.get(name)
 
-                db.update({id},  object, (err, doc) => {
+                db.update({id},  object, {}, (err, amount) => {
                     if (err) throw err
-                    doc = doc[0] ? doc : null
-                    res(docs)
+                    let updated = amount > 0 ? object : null
+                    res(updated)
                 })
             } catch (e) {
                 rej(`[ERROR][${name}][ADD] ${e}`)

@@ -1,5 +1,7 @@
-let app = require("express")()
+let express = require("express")
+let app = express()
 let cors = require("cors")
+let bodyParser = require('body-parser');
 
 app.get('/', (req, res) => {
     res.status(200)
@@ -14,7 +16,7 @@ app.use((req, res, next) => {
 });
 
 app.use(cors())
-
+app.use(bodyParser.json());
 
 require("./route.js")(app,"department")
 require("./route.js")(app,"patient")

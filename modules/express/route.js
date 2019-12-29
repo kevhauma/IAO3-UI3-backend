@@ -15,7 +15,7 @@ function init(app, name) {
         })
         .post(async(req, res) => {
             try {
-                let updated = repo.add(req.body.toAdd)
+                let updated = repo.add(req.body)
                 res.status(updated ? 200 : 404)
                 console.log(`${res.statusCode} POST /${name}/${req.params.id}`)
                 res.send(updated)
@@ -41,7 +41,7 @@ function init(app, name) {
         })        
         .put(async(req, res) => {
             try {
-                let updated = await repo.update(req.params.id, req.body.toUpdate)
+                let updated = await repo.update(req.params.id, req.body)
                 res.status(updated ? 200 : 404)
                 console.log(`${res.statusCode} PUT /${name}/${req.params.id}`)
                 res.send(updated)

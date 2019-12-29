@@ -121,7 +121,7 @@ function makeAction(){
     let time = new Date(today.getFullYear(),today.getMonth(),today.getDate(),hour,minutes)
     let actionName = actionNames[Math.round(Math.random() * (actionNames.length - 1))]
     
-    return {time,actionName,done: false}
+    return {time,actionName,done: false,id: uuid()}
 }
 
 function assignPatientsToRooms(){
