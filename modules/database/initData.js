@@ -7,6 +7,8 @@ let roomRepo = repoFactory("room")
 
 
 let departementnames = ["intensief","oogkliniek","fysiotherapie","orthopedie","spoed","psychiatrie"]
+let colors = ["#f44336","#9c27b0","#3f51b5","#03a9f4","#009688","#ffb300"]
+let icons = ["favorite","visibility","accessible","sports_handball","transfer_within_a_station","chat"]
 let facilities = ["sanitair","kinderverzorging","salon","TV"]
 let actionNames = ["medicatie","injectie","infuus","eten","wassen","omkeren"]
 let reasons= ["vitaminenpil ingeademd","gom in neus","steen in het oor","ontwrichtte kaak door geeuwen","gebroken rib door niezen","gebroken vinger tijdens zandekasteel bouwen","alergie aanval van avocados","gebroken teen door spel Twister","Infectie door bij","overreden door bus","te hard op klarinet geblazen","hartaanval door te veel pizza te eten","ontwrichtte pols door hond te aaien","gebroken been door verschieten van insect"]
@@ -17,19 +19,19 @@ let coords = [{x:12,y:23},
             {x:873,y:23},
             {x:1048,y:23},
             {x:1219,y:23},
-            {x:12,y:310},
-            {x:183,y:310},
-            {x:357,y:310},
-            {x:528,y:310},
-            {x:703,y:310},
-            {x:873,y:310},
-            {x:1048,y:310},
-            {x:1219,y:310}]
+            {x:12,y:384},
+            {x:183,y:384},
+            {x:357,y:384},
+            {x:528,y:384},
+            {x:703,y:384},
+            {x:873,y:384},
+            {x:1048,y:384},
+            {x:1219,y:384}]
 
 
 
 const roomwidth = 165
-const roomheight = 180
+const roomheight = 225
 let patients = []
 let rooms = []
 let departments = []
@@ -37,10 +39,11 @@ let departments = []
 init()
 
 async function init() {
-    
-    let data = (await axios.get("https://randomuser.me/api/?nat=NL&results=55")).data
-    let randoms = data.results
-    
+    try{
+        //pls api come back
+           let data = (await axios.get("https://randomuser.me/api/?nat=NL&results=55")).data
+           let randoms = data.results
+    // let randoms = []
     patients = randoms.map(makePatient)
     departments = departementnames.map(makeDepartment)
     
@@ -50,7 +53,7 @@ async function init() {
     await asyncForEach(patients, async (p) => await patientRepo.add(p))
     await asyncForEach(departments, async (d) => await departmentRepo.add(d))
     await asyncForEach(rooms, async (r) => await roomRepo.add(r))
-    
+    }catch(e){console.log(e)}
 }
 
 
@@ -58,9 +61,11 @@ function makeDepartment(dep,depindex){
     let department = {
         id : depindex.toString(),
         name: dep,
+        color: colors[depindex],
+        icon: icons[depindex],
         rooms:[]
     }
-    departmentRooms = coords.map((c,index)=>makeRoom(c,index,depindex))
+    let departmentRooms = coords.map((c,index)=>makeRoom(c,index,depindex))
     departmentRooms.forEach(r=>rooms.push(r))
     department.rooms = departmentRooms.map(r=>r.id)
     
@@ -95,14 +100,14 @@ function makePatient(random){
         img: random.picture.medium,
         dob: random.dob.date,
         vegan: Math.random() > 0.9,
-        reason: reasons[Math.round(Math.random()*(reasons.length-1))]   
+        reason: reasons[Math.round(Math.random()*(reasons.length-1))],
+        actions: []
     }
-    let actions = []
+    
     let amount = Math.round(Math.random() * 8 + 2)
     for(let i=0;i<amount;i++){
-        actions.push(makeAction())
+        patient.actions.push(makeAction())
     }
-    patient.actions = actions
     return patient
 }
 
