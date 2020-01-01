@@ -1,35 +1,36 @@
 let app = require("../express/express.js").app
-let http = require('http').Server(app)
-let io = require('socket.io')(http)
-let simplex = new require('simplex-noise')()
-let repo = require("../database/repo.js")("patient")
+let http = require("http").Server(app)
+let io = require("socket.io")(http)
+let {
+    makeNoise2D
+} = require("open-simplex-noise")
+const noise2D = makeNoise2D(Date.now())
+let repo = require("../database/repoFactory.js")("patient")
 
-let offsetX = 0
+let offsetY = 0
 
+http.listen(3001);
 
-io.on('connection', async(socket) => {
-    let allPatients = await repo.get();
-    setInterval(() => {
-        allPatients.forEach(patient => {
-            let hr = simplex.noise2D(patient.id, offsetY) * 200 + 40
-            io.emit("hr", {patient,hr})
+io.of("/socket")
+    .on("connect", async (socket) => {
+        console.log("connection")
+        let allPatients = await repo.get();
+        setInterval(() => {
+            allPatients.forEach((patient, i) => {
+                let hr = Math.abs(Math.floor(noise2D(i, offsetY) * 300)) + 40
+                socket.emit("heartrate", {
+                    patient: patient.id,
+                    hr
+                })
+            })
+            offsetY += 0.005
+        }, 2000)
+
+        //post request to ring bell in room
+        app.post("/bell/:roomId", (req, res) => {
+            console.log("bell ringed at:", req.params.roomId)
+            socket.emit("bellRinged", req.params.roomId)
+            res.send(`rung a bell at room ${req.params.roomId}`)
         })
-        offsetY += 0.01
-    }, 2000)
-})
 
-
-io
-    .off("/patient")
-    .on('connection', async(socket) => {
-    let hr = simplex.noise2D(200, offsetY) * 200 + 40
-    socket.emit("hr", {hr})
-    offsetY += 0.01
-
-})
-
-
-//post request to ring bell in room
-app.post("/bell/:roomId", (req, res) => {
-    io.emit("bellRinged", req.params.roomId)
-})
+    })

@@ -11,7 +11,23 @@ let colors = ["#f44336","#9c27b0","#3f51b5","#03a9f4","#009688","#ffb300"]
 let icons = ["favorite","visibility","accessible","sports_handball","transfer_within_a_station","chat"]
 let facilities = ["sanitair","kinderverzorging","salon","TV"]
 let actionNames = ["medicatie","injectie","infuus","eten","wassen","omkeren"]
-let reasons= ["vitaminenpil ingeademd","gom in neus","steen in het oor","ontwrichtte kaak door geeuwen","gebroken rib door niezen","gebroken vinger tijdens zandekasteel bouwen","alergie aanval van avocados","gebroken teen door spel Twister","Infectie door bij","overreden door bus","te hard op klarinet geblazen","hartaanval door te veel pizza te eten","ontwrichtte pols door hond te aaien","gebroken been door verschieten van insect"]
+
+let reasons= ["vitaminenpil ingeademd",
+              "gom in neus",
+              "steen in het oor",
+              "ontwrichtte kaak door geeuwen",
+              "gebroken rib door niezen",
+              "gebroken vinger tijdens zandekasteel bouwen",
+              "alergie aanval van avocados",
+              "gebroken teen door spel Twister",
+              "Infectie door bij",
+              "overreden door bus",
+              "te hard op klarinet geblazen",
+              "hartaanval door te veel pizza te eten",
+              "ontwrichtte pols door hond te aaien",
+              "gebroken been door verschieten van insect",
+              "slaapstoornis door UI3"]
+
 let coords = [{x:12,y:23},
             {x:183,y:23},
             {x:357,y:23},
@@ -119,9 +135,9 @@ function makeAction(){
     let minutes = Math.round(Math.random() * 60)
     
     let time = new Date(today.getFullYear(),today.getMonth(),today.getDate(),hour,minutes)
-    let actionName = actionNames[Math.round(Math.random() * (actionNames.length - 1))]
+    let type = actionNames[Math.round(Math.random() * (actionNames.length - 1))]
     
-    return {time,actionName,done: false,id: uuid()}
+    return {time,type,done: false,id: uuid()}
 }
 
 function assignPatientsToRooms(){
