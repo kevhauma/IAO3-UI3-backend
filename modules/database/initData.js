@@ -53,7 +53,7 @@ let rooms = []
 let departments = []
 
 init()
-
+module.exports = init
 async function init() {
     try{
         //pls api come back

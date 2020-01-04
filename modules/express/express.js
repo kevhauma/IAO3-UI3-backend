@@ -24,6 +24,16 @@ require("./route.js")(app,"room")
 
 
 
+let clean = require("../database/cleanData.js")
+let init = require("../database/initData.js")
+app.post("/reset/",async (req,res)=>{
+    clean()
+    await init()
+    res.send("database has been reset")
+})
+
+
+
 app.listen(3000,() => console.log("listening on port 3000\n ready to go"))
 
 
