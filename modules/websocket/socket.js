@@ -15,7 +15,7 @@ io.of("/socket")
     .on("connect", async (socket) => {
         console.log("connection")
         let allPatients = await repo.get();
-        setInterval(() => {
+        let interval = setInterval(() => {
             allPatients.forEach((patient, i) => {
                 let hr = Math.abs(Math.floor(noise2D(i, offsetY) * 300)) + 40
                 socket.emit("heartrate", {
@@ -34,3 +34,4 @@ io.of("/socket")
         })
 
     })
+module.exports.hrInterval = interval

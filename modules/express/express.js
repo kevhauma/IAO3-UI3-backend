@@ -3,6 +3,9 @@ let app = express()
 let cors = require("cors")
 let bodyParser = require('body-parser');
 
+let clean = require("../database/cleanData.js")
+clean()
+
 app.get('/', (req, res) => {
     res.status(200)
     res.send("Welcome to the Hospital API")
@@ -24,11 +27,8 @@ require("./route.js")(app,"room")
 
 
 
-let clean = require("../database/cleanData.js")
-let init = require("../database/initData.js")
 app.post("/reset/",async (req,res)=>{
-    clean()
-    await init()
+    await clean()
     res.send("database has been reset")
 })
 
