@@ -1,9 +1,7 @@
 let store = require("./dataStore.js")
-let {hrInterval} = require("../websocket/socket.js")
 
 
 async function clean(){
-    store.clean(["room","patient","department"])   
-    clearInterval(hrInterval)
+    store.clean(["room","patient","department"])
     await init()
 }

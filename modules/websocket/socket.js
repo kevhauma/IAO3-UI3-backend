@@ -34,4 +34,3 @@ io.of("/socket")
         })
 
     })
-module.exports.hrInterval = interval
