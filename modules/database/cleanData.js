@@ -7,7 +7,3 @@ async function clean(){
     clearInterval(hrInterval)
     await init()
 }
-
-
-
-module.exports = clean
